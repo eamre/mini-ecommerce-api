@@ -1,4 +1,5 @@
 ﻿using ETicaretAPI.Application.Services;
+using ETicaretAPI.Infrastructure.Operation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -32,7 +33,7 @@ namespace ETicaretAPI.Infrastructure.Services
 
             foreach (IFormFile file in files)
             {
-                string newFileName = await FileRenameAsync(file.FileName, path);
+                string newFileName = await FileRenameAsync(file.FileName, uploadPath);
 
                 bool result = await CopyFileAsync($"{uploadPath}\\{newFileName}",file);
                 datas.Add((newFileName, $"{uploadPath}\\{newFileName}"));
@@ -46,37 +47,63 @@ namespace ETicaretAPI.Infrastructure.Services
             return null;
         }
         
-        public Task<string> FileRenameAsync(string fileName, string path)
+        private async Task<string> FileRenameAsync(string fileName, string path, bool first = true)
         {
-            fileName = fileName.Replace("ç", "c")
-                               .Replace("ğ", "g")
-                               .Replace("ı", "i")
-                               .Replace("ö", "o")
-                               .Replace("ş", "s")
-                               .Replace("ü", "u")
-                               .Replace("İ", "I");
-
-            fileName = fileName.Replace(" ", "-");
-
-            string uploadPath = Path.Combine(_hostingEnvironment.WebRootPath, path);
-            string filePath = Path.Combine(uploadPath, fileName);
-            int count = 1;
-
-            while (File.Exists(filePath))
+            string newFileName = await Task.Run<string>(async() => 
             {
-                string nameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
                 string extension = Path.GetExtension(fileName);
-                nameWithoutExtension = nameWithoutExtension.TrimEnd('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-                count++;
+                string newFileName = string.Empty;
 
-                nameWithoutExtension = nameWithoutExtension + count.ToString();
+                if (first)
+                {
+                    string oldName = Path.GetFileNameWithoutExtension(fileName);
+                    newFileName = $"{RenameOperation.CharacterRegulatory(oldName)}{extension}";
+                }
+                else 
+                { 
+                    newFileName = fileName;
+                    int indexNo1 = newFileName.IndexOf('-');
+                    if (indexNo1 == -1)
+                    {
+                        newFileName = $"{Path.GetFileNameWithoutExtension(newFileName)}-2{extension}";
+                    }
+                    else
+                    {
+                        int lastIndex = 0;
+                        while(true)
+                        {
+                            lastIndex = indexNo1;
+                            indexNo1 = indexNo1 = newFileName.IndexOf("-", indexNo1+1);
+                            if(indexNo1 == -1)
+                            {
+                                indexNo1 = lastIndex;
+                                break;
+                            }
+                        }
 
-                fileName = nameWithoutExtension + extension;
-                filePath = Path.Combine(uploadPath, fileName);
-            }
+                        int indexNo2 = newFileName.IndexOf(".");
+                        string fileNo = newFileName.Substring(indexNo1+1, indexNo2-indexNo1-1);
+                        
+                        if(int.TryParse(fileNo, out int _fileNo))
+                        {
+                            _fileNo++;
+                            newFileName = newFileName
+                                          .Remove(indexNo1+1, indexNo2 - indexNo1 - 1)
+                                          .Insert(indexNo1+1, _fileNo.ToString());
+                        }
+                        else
+                            newFileName = $"{Path.GetFileNameWithoutExtension(newFileName)}-2{extension}";
+                    }
+                }
 
-            // Yeni dosya ismini döndür
-            return Task.FromResult(fileName);
+                if (File.Exists($"{path}\\{newFileName}"))
+                    return await FileRenameAsync(newFileName, path, false);
+
+                else
+                    return newFileName;
+            });
+
+            return newFileName;
         }
 
         public async Task<bool> CopyFileAsync(string path, IFormFile file)
