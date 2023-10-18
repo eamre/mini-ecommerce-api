@@ -17,7 +17,7 @@ namespace ETicaretAPI.Infrastructure.Services
         public FileService(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
-        }       
+        }
 
         public async Task<List<(string fileName, string path)>> UploadAsync(string path, IFormFileCollection files)
         {
@@ -35,21 +35,21 @@ namespace ETicaretAPI.Infrastructure.Services
             {
                 string newFileName = await FileRenameAsync(file.FileName, uploadPath);
 
-                bool result = await CopyFileAsync($"{uploadPath}\\{newFileName}",file);
-                datas.Add((newFileName, $"{uploadPath}\\{newFileName}"));
+                bool result = await CopyFileAsync($"{uploadPath}\\{newFileName}", file);
+                datas.Add((newFileName, $"{path}\\{newFileName}"));
                 results.Add(result);
             }
-            
-            if(results.TrueForAll(r => r.Equals(true)))
+
+            if (results.TrueForAll(r => r.Equals(true)))
             {
                 return datas;
             }
             return null;
         }
-        
+
         private async Task<string> FileRenameAsync(string fileName, string path, bool first = true)
         {
-            string newFileName = await Task.Run<string>(async() => 
+            string newFileName = await Task.Run<string>(async () =>
             {
                 string extension = Path.GetExtension(fileName);
                 string newFileName = string.Empty;
@@ -59,8 +59,8 @@ namespace ETicaretAPI.Infrastructure.Services
                     string oldName = Path.GetFileNameWithoutExtension(fileName);
                     newFileName = $"{RenameOperation.CharacterRegulatory(oldName)}{extension}";
                 }
-                else 
-                { 
+                else
+                {
                     newFileName = fileName;
                     int indexNo1 = newFileName.IndexOf('-');
                     if (indexNo1 == -1)
@@ -70,11 +70,11 @@ namespace ETicaretAPI.Infrastructure.Services
                     else
                     {
                         int lastIndex = 0;
-                        while(true)
+                        while (true)
                         {
                             lastIndex = indexNo1;
-                            indexNo1 = indexNo1 = newFileName.IndexOf("-", indexNo1+1);
-                            if(indexNo1 == -1)
+                            indexNo1 = indexNo1 = newFileName.IndexOf("-", indexNo1 + 1);
+                            if (indexNo1 == -1)
                             {
                                 indexNo1 = lastIndex;
                                 break;
@@ -82,14 +82,14 @@ namespace ETicaretAPI.Infrastructure.Services
                         }
 
                         int indexNo2 = newFileName.IndexOf(".");
-                        string fileNo = newFileName.Substring(indexNo1+1, indexNo2-indexNo1-1);
-                        
-                        if(int.TryParse(fileNo, out int _fileNo))
+                        string fileNo = newFileName.Substring(indexNo1 + 1, indexNo2 - indexNo1 - 1);
+
+                        if (int.TryParse(fileNo, out int _fileNo))
                         {
                             _fileNo++;
                             newFileName = newFileName
-                                          .Remove(indexNo1+1, indexNo2 - indexNo1 - 1)
-                                          .Insert(indexNo1+1, _fileNo.ToString());
+                                          .Remove(indexNo1 + 1, indexNo2 - indexNo1 - 1)
+                                          .Insert(indexNo1 + 1, _fileNo.ToString());
                         }
                         else
                             newFileName = $"{Path.GetFileNameWithoutExtension(newFileName)}-2{extension}";
@@ -106,6 +106,7 @@ namespace ETicaretAPI.Infrastructure.Services
             return newFileName;
         }
 
+
         public async Task<bool> CopyFileAsync(string path, IFormFile file)
         {
             try
@@ -120,8 +121,8 @@ namespace ETicaretAPI.Infrastructure.Services
             {
                 throw;
             }
-            
+
         }
-        
+
     }
 }
