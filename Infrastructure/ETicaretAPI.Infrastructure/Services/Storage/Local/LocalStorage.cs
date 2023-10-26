@@ -54,6 +54,7 @@ namespace ETicaretAPI.Infrastructure.Services.Storage.Local
             
             return datas;
         }
+
         private async Task<bool> CopyFileAsync(string path, IFormFile file)
         {
             try
