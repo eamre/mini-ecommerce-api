@@ -39,7 +39,7 @@ namespace ETicaretAPI.Application.Features.Commands.AppUsers.LoginUser
 
             if (result.Succeeded)
             {
-                Token token = _tokenHandler.CreateAccessToken(2);
+                Token token = _tokenHandler.CreateAccessToken(4);
 
                 return new LoginUserSuccessCommandResponse()
                 {
@@ -47,12 +47,12 @@ namespace ETicaretAPI.Application.Features.Commands.AppUsers.LoginUser
                 };
             }
 
+            throw new AuthenticationErrorException();
+            
             //return new LoginUserErrorCommandResponse()
             //{
             //    Message = "Kullanıcı adi ya da şifre hatalı"
             //};
-
-            throw new AuthenticationErrorException();
         }
     }
 }
