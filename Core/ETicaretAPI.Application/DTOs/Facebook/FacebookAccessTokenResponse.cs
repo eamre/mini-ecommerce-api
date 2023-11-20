@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ETicaretAPI.Application.DTOs.Facebook
 {
-    public class FacebookAccessTokenResponse_DTO
+    public class FacebookAccessTokenResponse
     {
         [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }

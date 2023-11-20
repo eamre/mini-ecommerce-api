@@ -1,4 +1,6 @@
-﻿using ETicaretAPI.Application.Exceptions;
+﻿using ETicaretAPI.Application.Abstractions.Services;
+using ETicaretAPI.Application.DTOs.User;
+using ETicaretAPI.Application.Exceptions;
 using ETicaretAPI.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -12,32 +14,30 @@ namespace ETicaretAPI.Application.Features.Commands.AppUsers.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        private readonly UserManager<AppUser> _userManager;
-        public CreateUserCommandHandler(UserManager<AppUser> userManager)
+        private readonly IUserService _userService;
+
+        public CreateUserCommandHandler(IUserService userService)
         {
-            _userManager = userManager;
+            _userService = userService;
         }
+
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            IdentityResult result = await _userManager.CreateAsync(new()
+            var createUserResponse = await _userService.CreateAsync(new CreateUserRequest()
             {
-                Id = Guid.NewGuid().ToString(),
-                NameSurname = request.Name,
-                UserName = request.Username,
-                Email = request.Email,               
-            },request.Password);
+                Email = request.Email,
+                Name = request.Name,
+                Username = request.Username,
+                Password = request.Password,
+                PasswordAgain = request.PasswordAgain
+            });
 
-            CreateUserCommandResponse response = new() { Success = result.Succeeded};
+            return new CreateUserCommandResponse()
+            {
+                Message = createUserResponse.Message,
+                Success = createUserResponse.Success,
+            };
 
-            if(result.Succeeded)
-                response.Message = "Kullanici Basariyla Olusturuldu.";
-            
-            else
-                foreach(var err in result.Errors)
-                {
-                    response.Message += $"{err.Code} - {err.Description}\n";
-                }
-            return response;
             //throw new UserCreateFailedException();
         }
     }

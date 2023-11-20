@@ -20,10 +20,10 @@ namespace ETicaretAPI.Infrastructure.Services.Tokens
             _configuration = configuration;
         }
 
-        public Token CreateAccessToken(int minute)
+        public Token CreateAccessToken(int second)
         {
             Token token = new Token();
-            token.Expiration = DateTime.UtcNow.AddMinutes(minute);
+            token.Expiration = DateTime.UtcNow.AddSeconds(second);
 
             SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Token:SecurityKey"]));
             SigningCredentials  signingCredential = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ETicaretAPI.Application.DTOs.Facebook
 {
-    public class FacebookUserInfoResponse_DTO
+    public class FacebookUserInfoResponse
     {
         [JsonPropertyName("id")]
         public string Id { get; set; }
