@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ETicaretAPI.Application.Abstractions.Tokens
+namespace ETicaretAPI.Application.Features.Commands.AppUsers.RefreshTokenLogin
 {
-    public interface ITokenHandler
+    public class RefreshTokenLoginCommandResponse
     {
-        Token CreateAccessToken(int second);
-        string CreateRefreshToken();
+        public Token Token { get; set; }
+
     }
 }

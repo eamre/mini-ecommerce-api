@@ -21,7 +21,7 @@ namespace ETicaretAPI.Application.Features.Commands.AppUsers.GoogleLogin
         public async Task<GoogleLoginCommandResponse> Handle(GoogleLoginCommandRequest request,
             CancellationToken cancellationToken)
         {
-            var token = await _authService.GoogleLoginAsync(request.IdToken, 600);
+            var token = await _authService.GoogleLoginAsync(request.IdToken, 10);
             return new GoogleLoginCommandResponse() { Token = token };
         }
     }

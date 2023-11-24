@@ -1,6 +1,7 @@
 ﻿using ETicaretAPI.Application.Features.Commands.AppUsers.FacebookLogin;
 using ETicaretAPI.Application.Features.Commands.AppUsers.GoogleLogin;
 using ETicaretAPI.Application.Features.Commands.AppUsers.LoginUser;
+using ETicaretAPI.Application.Features.Commands.AppUsers.RefreshTokenLogin;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,13 @@ namespace ETicaretAPI.API.Controllers
         }
 
         [HttpPost("[action]")]
+        public async Task<IActionResult> RefreshTokenLogin([FromBody] RefreshTokenLoginCommandRequest refreshTokenLoginCommandRequest)
+        {
+            RefreshTokenLoginCommandResponse response = await _mediator.Send(refreshTokenLoginCommandRequest);
+            return Ok(response);
+        }
+
+        [HttpPost("[action]")]
         public async Task<IActionResult> Login([FromBody] LoginUserCommandRequest loginRequest)
         {
             var loginUserResponse = await _mediator.Send(loginRequest);
@@ -26,14 +34,14 @@ namespace ETicaretAPI.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> GoogleLogin(GoogleLoginCommandRequest googleLoginCommandRequest)
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginCommandRequest googleLoginCommandRequest)
         {
             var response = await _mediator.Send(googleLoginCommandRequest);
             return Ok(response);
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> FacebookLogin(FacebookLoginCommandRequest facebookLoginCommandRequest)
+        public async Task<IActionResult> FacebookLogin([FromBody] FacebookLoginCommandRequest facebookLoginCommandRequest)
         {
             var response = await _mediator.Send(facebookLoginCommandRequest);
             return Ok(response);
