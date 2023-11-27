@@ -36,7 +36,9 @@ namespace ETicaretAPI.Infrastructure.Services.Tokens
                 expires: token.Expiration,
                 notBefore: DateTime.UtcNow,
                 signingCredentials: signingCredential,
-                claims:new List<Claim> {new(ClaimTypes.Name, user.UserName)}
+                claims:new List<Claim> {
+                    new(ClaimTypes.Name, user.UserName),
+                    new(ClaimTypes.Email, user.Email)}
                 );
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             token.AccessToken = tokenHandler.WriteToken(tokenJwt);

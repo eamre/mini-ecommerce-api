@@ -1,4 +1,5 @@
 using ETicaretAPI.API.Configurations.ColumWriters;
+using ETicaretAPI.API.Extensions;
 using ETicaretAPI.Application;
 using ETicaretAPI.Application.Validators.Products;
 using ETicaretAPI.Infrastructure;
@@ -36,15 +37,14 @@ Logger log = new LoggerConfiguration()
     }, needAutoCreateTable:true).Enrich.FromLogContext().MinimumLevel.Information().CreateLogger();
 builder.Host.UseSerilog(log);
 
-//builder.Services.AddHttpLogging(logging =>
-//{
-//    logging.LoggingFields = HttpLoggingFields.All;
-//    logging.RequestHeaders.Add("sec-ch-ua");
-//    logging.MediaTypeOptions.AddText("application/javascript");
-//    logging.RequestBodyLogLimit = 4096;
-//    logging.ResponseBodyLogLimit = 4096;
-//});
-
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = HttpLoggingFields.All;
+    logging.RequestHeaders.Add("sec-ch-ua");
+    logging.MediaTypeOptions.AddText("application/javascript");
+    logging.RequestBodyLogLimit = 4096;
+    logging.ResponseBodyLogLimit = 4096;
+});
 
 // Add services to the container.
 builder.Services.AddPersistenceServices(builder.Configuration);
@@ -55,6 +55,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddCors(opt => opt.AddDefaultPolicy(policy => 
     policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod()
 ));
+
 builder.Services.AddControllers(opt => opt.Filters.Add<ValidationFilter>())
     .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
     .ConfigureApiBehaviorOptions(opt => opt.SuppressModelStateInvalidFilter = true);
@@ -93,6 +94,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 
+app.ConfigureExceptionHandler(app.Services.GetRequiredService<ILogger<Program>>());
+
 app.UseSerilogRequestLogging();
 
 app.UseHttpLogging();
@@ -108,6 +111,7 @@ app.UseAuthorization();
 app.Use(async (context, next) =>
 {
     var username = context.User?.Identity?.IsAuthenticated != null || true ? context.User?.Identity?.Name : null;
+    var email = context.User?.FindFirst(ClaimTypes.Email)?.Value;
     LogContext.PushProperty("user_name", username);
     await next();
 });

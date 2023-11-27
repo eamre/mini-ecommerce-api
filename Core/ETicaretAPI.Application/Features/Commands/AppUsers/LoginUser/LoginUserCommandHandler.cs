@@ -25,15 +25,16 @@ namespace ETicaretAPI.Application.Features.Commands.AppUsers.LoginUser
 
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            var token = await _authService.LoginAsync(request.UsernameOrEmail, request.Password, 15);
+            var token = await _authService.LoginAsync(request.UsernameOrEmail, request.Password, 600);
             return new LoginUserSuccessCommandResponse()
             {
                 Token = token
             };
-            //return new LoginUserErrorCommandResponse()
-            //{
-            //    Message = "Kullanıcı adi ya da şifre hatalı"
-            //};
+           
         }
     }
 }
+//return new LoginUserErrorCommandResponse()
+            //{
+            //    Message = "Kullanıcı adi ya da şifre hatalı"
+            //};
