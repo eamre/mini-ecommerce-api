@@ -49,6 +49,7 @@ builder.Services.AddHttpLogging(logging =>
 });
 
 // Add services to the container.
+builder.Services.AddHttpContextAccessor();// clienttan gelen istek neticesinde oluþturulan httpcontext nesnesine katmanlardaki sýnýflar üzerinden eriþebilmemizi saðlayan servis
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddSignalRServices();
 builder.Services.AddInfrastructureServices();
