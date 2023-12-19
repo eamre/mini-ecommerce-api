@@ -74,6 +74,15 @@ namespace ETicaretAPI.Persistence.Services
             return basketResult.BasketItems.ToList();
         }
 
+        public Basket? GetUserActiveBasket
+        {
+            get
+            {
+                Basket? basket = ContextUser().Result;
+                return basket;
+            }    
+        }
+
         public async Task RemoveBasketItemAsync(string basketItemId)
         {
             BasketItem basketItem = await _basketItemReadRepository.GetByIdAsync(basketItemId);

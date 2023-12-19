@@ -58,7 +58,7 @@ namespace ETicaretAPI.Persistence.Services
 
                 var loginInfo = new UserLoginInfo("FACEBOOK", validation.Data.UserId, "FACEBOOK");
                 AppUser user = await _userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
-
+                
                 return await CreateUserExternalAsync(user, userInfo.Email, userInfo.Name, loginInfo, accessTokenLifeTime);
             }
 
