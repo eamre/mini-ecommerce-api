@@ -1,4 +1,5 @@
 ﻿using ETicaretAPI.Application.DTOs.Order;
+using ETicaretAPI.Application.RequestParameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace ETicaretAPI.Application.Abstractions.Services
 {
     public interface IOrderService
     {
-        Task CreateOrderAsync(CreateOrder createOrder); 
+        Task CreateOrderAsync(CreateOrder createOrder);
+        Task<List<ListOrder>> GetAllOrdersAsync(Pagination pagination);
     }
 }
