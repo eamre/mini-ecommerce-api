@@ -41,23 +41,53 @@ namespace ETicaretAPI.Persistence.Services
 
         }
 
-        public async Task<List<ListOrder>> GetAllOrdersAsync(Pagination pagination)
+        public async Task<ListOrder> GetAllOrdersAsync(Pagination pagination)
         {
-            return await _orderReadRepository.Table.Include(o => o.Basket)
+            var query = _orderReadRepository.Table.Include(o => o.Basket)
                 .ThenInclude(b => b.User)
                 .ThenInclude(u => u.Baskets)
                 .ThenInclude(b => b.BasketItems)
-                .ThenInclude(bi => bi.Product)
-                .Select(o => new ListOrder
+                .ThenInclude(bi => bi.Product);
+
+            var data = query.Skip(pagination.Page * pagination.Size)
+                .Take(pagination.Size);
+
+            return new()
+            {
+                TotalOrderCount = await query.CountAsync(),
+                Orders = await data.Select(o => new
                 {
+                    Id = o.Id,
                     CreateDate = o.CreateDate,
                     OrderCode = o.OrderCode,
-                    TotalPrice = o.Basket.BasketItems.Sum(bi=>bi.Product.Price * bi.Quantity),
+                    TotalPrice = o.Basket.BasketItems.Sum(bi => bi.Product.Price * bi.Quantity),
                     UserName = o.Basket.User.UserName
+                }).ToListAsync()
+            };
+        }
+
+        public async Task<SingleOrder> GetOrderByIdAsync(string id)
+        {
+            var data = await _orderReadRepository.Table
+                .Include(o => o.Basket)
+                .ThenInclude(b => b.BasketItems)
+                .ThenInclude(bi => bi.Product)
+                .FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
+
+            return new()
+            {
+                Id = data.Id.ToString(),
+                Address = data.Address,
+                CreatedDate = data.CreateDate,
+                Description = data.Description,
+                OrderCode = data.OrderCode,
+                BasketItems = data.Basket.BasketItems.Select(bi => new
+                {
+                    bi.Product.Name,
+                    bi.Product.Price,
+                    bi.Quantity
                 })
-                .Skip(pagination.Page * pagination.Size)
-                .Take(pagination.Size)
-                .ToListAsync();
+            };
         }
     }
 }

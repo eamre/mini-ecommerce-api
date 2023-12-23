@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ETicaretAPI.Application.Features.Queries.Order
+namespace ETicaretAPI.Application.Features.Queries.Order.GetAllOrders
 {
     public class GetAllOrdersQueryHandler : IRequestHandler<GetAllOrdersQueryRequest, GetAllOrdersQueryResponse>
     {
-        private readonly IOrderService  _orderService;
+        private readonly IOrderService _orderService;
 
         public GetAllOrdersQueryHandler(IOrderService orderService)
         {
@@ -22,9 +22,9 @@ namespace ETicaretAPI.Application.Features.Queries.Order
             var data = await _orderService.GetAllOrdersAsync(request.Pagination);
             return new GetAllOrdersQueryResponse()
             {
-                TotalOrdersCount = data.Count,
-                Orders = data.ToList()
-            };         
+                TotalOrdersCount = data.TotalOrderCount,
+                Orders = data.Orders
+            };
         }
     }
 }
