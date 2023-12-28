@@ -11,6 +11,7 @@ namespace ETicaretAPI.Application.Abstractions.Services
     public interface IUserService
     {
         Task<CreateUserResponse> CreateAsync(CreateUserRequest model);
-        Task UpdateRefreshToken(string refreshToken, AppUser user, DateTime accessTokenDate, int addOnAccessTokenLifeTime);
+        Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, DateTime accessTokenDate, int addOnAccessTokenLifeTime);
+        Task UpdatePasswordAsync(string userId, string resetToken, string newPassword);
     }
 }
