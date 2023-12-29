@@ -24,6 +24,7 @@ namespace ETicaretAPI.Persistence.Contexts
         public DbSet<InvoiceFile> InvoiceFiles { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
         public DbSet<Basket> Baskets { get; set; }
+        public DbSet<CompletedOrder> CompletedOrders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -40,6 +41,11 @@ namespace ETicaretAPI.Persistence.Contexts
             builder.Entity<Order>()
                 .HasIndex(o => o.OrderCode)
                 .IsUnique();
+
+            builder.Entity<Order>()
+                .HasOne(o => o.CompletedOrder)
+                .WithOne(co => co.Order)
+                .HasForeignKey<CompletedOrder>(co => co.OrderId);
 
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

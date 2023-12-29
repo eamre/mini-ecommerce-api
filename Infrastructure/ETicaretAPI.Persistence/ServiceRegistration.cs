@@ -4,12 +4,14 @@ using ETicaretAPI.Application.Abstractions.Services.Authentications;
 using ETicaretAPI.Application.Repositories;
 using ETicaretAPI.Application.Repositories.BasketItems;
 using ETicaretAPI.Application.Repositories.Baskets;
+using ETicaretAPI.Application.Repositories.CompletedOrders;
 using ETicaretAPI.Domain.Entities.Identity;
 using ETicaretAPI.Persistence.Concrete;
 using ETicaretAPI.Persistence.Contexts;
 using ETicaretAPI.Persistence.Repositories;
 using ETicaretAPI.Persistence.Repositories.BasketItems;
 using ETicaretAPI.Persistence.Repositories.Baskets;
+using ETicaretAPI.Persistence.Repositories.CompletedOrders;
 using ETicaretAPI.Persistence.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +66,9 @@ namespace ETicaretAPI.Persistence
 
             services.AddScoped<IBasketItemReadRepository, BasketItemReadRepository>();
             services.AddScoped<IBasketItemWriteRepository, BasketItemWriteRepository>();
+          
+            services.AddScoped<ICompletedOrderReadRepository, CompletedOrderReadRepository>();
+            services.AddScoped<ICompletedOrderWriteRepository, CompletedOrderWriteRepository>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBasketService, BasketService>();
