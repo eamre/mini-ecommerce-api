@@ -71,6 +71,7 @@ namespace ETicaretAPI.Persistence
             services.AddScoped<ICompletedOrderWriteRepository, CompletedOrderWriteRepository>();
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IOrderService, OrderService>();
