@@ -43,8 +43,8 @@ namespace ETicaretAPI.Persistence.Services
             int totalRoleCount = await _roleManager.Roles.CountAsync();
 
             Dictionary<string, string> roles = await _roleManager.Roles
-                .Skip(pagination.Size * pagination.Page)
-                .Take(pagination.Size)
+                .Skip(pagination.Page == -1 ? 0 : pagination.Size * pagination.Page)
+                .Take(pagination.Size == -1 ? totalRoleCount : pagination.Size)
                 .ToDictionaryAsync(r => r.Id, r => r.Name);
 
             return new()

@@ -5,6 +5,8 @@ using ETicaretAPI.Application.Repositories;
 using ETicaretAPI.Application.Repositories.BasketItems;
 using ETicaretAPI.Application.Repositories.Baskets;
 using ETicaretAPI.Application.Repositories.CompletedOrders;
+using ETicaretAPI.Application.Repositories.Endpoints;
+using ETicaretAPI.Application.Repositories.Menus;
 using ETicaretAPI.Domain.Entities.Identity;
 using ETicaretAPI.Persistence.Concrete;
 using ETicaretAPI.Persistence.Contexts;
@@ -12,6 +14,8 @@ using ETicaretAPI.Persistence.Repositories;
 using ETicaretAPI.Persistence.Repositories.BasketItems;
 using ETicaretAPI.Persistence.Repositories.Baskets;
 using ETicaretAPI.Persistence.Repositories.CompletedOrders;
+using ETicaretAPI.Persistence.Repositories.Endpoints;
+using ETicaretAPI.Persistence.Repositories.Menus;
 using ETicaretAPI.Persistence.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -70,6 +74,13 @@ namespace ETicaretAPI.Persistence
             services.AddScoped<ICompletedOrderReadRepository, CompletedOrderReadRepository>();
             services.AddScoped<ICompletedOrderWriteRepository, CompletedOrderWriteRepository>();
 
+            services.AddScoped<IMenuReadRepository, MenuReadRepository>();
+            services.AddScoped<IMenuWriteRepository, MenuWriteRepository>();
+
+            services.AddScoped<IEndpointReadRepository, EndpointReadRepository>();
+            services.AddScoped<IEndpointWriteRepository, EndpointWriteRepository>();
+
+
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IBasketService, BasketService>();
@@ -77,6 +88,8 @@ namespace ETicaretAPI.Persistence
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IExternalAuthentication, AuthService>();
             services.AddScoped<IInternalAuthentication, AuthService>();
+            services.AddScoped<IAuthorizationEndpointService, AuthorizationEndpointService>();
+
 
 
 

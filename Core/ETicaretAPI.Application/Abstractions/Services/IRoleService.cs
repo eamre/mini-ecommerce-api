@@ -14,6 +14,5 @@ namespace ETicaretAPI.Application.Abstractions.Services
         Task<bool> CreateRole(string name);
         Task<bool> UpdateRole(string id, string name);
         Task<bool> DeleteRole(string id);
-
     }
 }
