@@ -17,7 +17,8 @@ namespace ETicaretAPI.Application.Abstractions.Services
         Task<List<ListUser>> GetAllUsersAsync(Pagination pagination);
         int TotalUsersCount { get; }
         Task AssignRoleToUserAsync(string userId, string[] roles);
-        Task<string[]> GetRolesToUserAsync(string userId);
+        Task<string[]> GetRolesToUserAsync(string userIdOrName);
+        Task<bool> HasRolePermissionToEndpointAsync(string name, string code);
 
     }
 }

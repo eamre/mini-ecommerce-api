@@ -56,7 +56,7 @@ namespace ETicaretAPI.API.Controllers
 
         [HttpPost("[action]")]
         [Authorize(AuthenticationSchemes = "Admin")]
-        [AuthorizeDefinition(ActionType = ActionType.Writing, Definition = "Get Roles To User", Menu = AuthorizeDefinitionConstants.Users)]
+        [AuthorizeDefinition(ActionType = ActionType.Writing, Definition = "Assign Role To User", Menu = AuthorizeDefinitionConstants.Users)]
         public async Task<IActionResult> AssignRoleToUser([FromBody] AssignRoleToUserCommandRequest request)
         {
             var response = await _mediator.Send(request);
@@ -65,7 +65,7 @@ namespace ETicaretAPI.API.Controllers
 
         [HttpGet("[action]/{UserId}")]
         [Authorize(AuthenticationSchemes = "Admin")]
-        [AuthorizeDefinition(ActionType = ActionType.Reading, Definition = "Assign Role To User", Menu = AuthorizeDefinitionConstants.Users)]
+        [AuthorizeDefinition(ActionType = ActionType.Reading, Definition = "Get Roles To User", Menu = AuthorizeDefinitionConstants.Users)]
         public async Task<IActionResult> GetRolesToUser([FromRoute] GetRolesToUserQueryRequest request)
         {
             GetRolesToUserQueryResponse response = await _mediator.Send(request);

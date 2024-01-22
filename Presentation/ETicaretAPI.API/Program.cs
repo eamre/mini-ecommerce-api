@@ -1,5 +1,6 @@
 using ETicaretAPI.API.Configurations.ColumWriters;
 using ETicaretAPI.API.Extensions;
+using ETicaretAPI.API.Filters;
 using ETicaretAPI.Application;
 using ETicaretAPI.Application.Validators.Products;
 using ETicaretAPI.Infrastructure;
@@ -60,9 +61,11 @@ builder.Services.AddCors(opt => opt.AddDefaultPolicy(policy =>
     policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()
 ));
 
-builder.Services.AddControllers(opt => opt.Filters.Add<ValidationFilter>())
-    .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
-    .ConfigureApiBehaviorOptions(opt => opt.SuppressModelStateInvalidFilter = true);
+builder.Services.AddControllers(opt => {
+    opt.Filters.Add<ValidationFilter>();
+    opt.Filters.Add<RolePermissionFilter>();
+}).AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
+  .ConfigureApiBehaviorOptions(opt => opt.SuppressModelStateInvalidFilter = true);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
