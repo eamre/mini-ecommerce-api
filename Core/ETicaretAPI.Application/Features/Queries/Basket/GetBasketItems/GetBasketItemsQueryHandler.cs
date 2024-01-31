@@ -25,7 +25,8 @@ namespace ETicaretAPI.Application.Features.Queries.Basket.GetBasketItems
                 BasketItemId = bi.Id.ToString(),
                 Name = bi.Product.Name,
                 Price = bi.Product.Price,
-                Quantity = bi.Quantity
+                Quantity = bi.Quantity,
+                IsSelected = (bool)bi.IsSelected
             }).ToList();
         }
     }

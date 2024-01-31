@@ -10,6 +10,7 @@ namespace ETicaretAPI.Domain.Entities
     public class BasketItem : BaseEntity
     {
         public int Quantity { get; set; }
+        public bool? IsSelected { get; set; } = true;  
 
         public Guid BasketId { get; set; }
         public Basket Basket { get; set; }

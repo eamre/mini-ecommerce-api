@@ -4,6 +4,7 @@ using ETicaretAPI.Application.Enums;
 using ETicaretAPI.Application.Features.Commands.Basket.AddItemToBasket;
 using ETicaretAPI.Application.Features.Commands.Basket.RemoveBasketItem;
 using ETicaretAPI.Application.Features.Commands.Basket.UpdateQuantity;
+using ETicaretAPI.Application.Features.Commands.Basket.UpdateSelected;
 using ETicaretAPI.Application.Features.Queries.Basket.GetBasketItems;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -45,6 +46,14 @@ namespace ETicaretAPI.API.Controllers
         public async Task<IActionResult> UpdateQuantity(UpdateQuantityCommandRequest quantityRequest)
         {
             UpdateQuantityCommandResponse response = await _mediator.Send(quantityRequest);
+            return Ok(response);
+        }
+
+        [HttpPut("UpdateSelected")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = ActionType.Updating, Definition = "Update Basket Item Selected")]
+        public async Task<IActionResult> UpdateSelected(UpdateSelectedCommandRequest request)
+        {
+            var response = await _mediator.Send(request);
             return Ok(response);
         }
 

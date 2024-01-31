@@ -1,16 +1,15 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ETicaretAPI.Application.ViewModels.Baskets
+namespace ETicaretAPI.Application.Features.Commands.Basket.UpdateSelected
 {
-    public class VM_Update_BasketItem
+    public class UpdateSelectedCommandRequest:IRequest<UpdateSelectedCommandResponse>
     {
         public string BasketItemId { get; set; }
-        public int Quantity { get; set; }
         public bool IsSelected { get; set; }
-
     }
 }

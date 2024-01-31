@@ -1,6 +1,8 @@
 ﻿using ETicaretAPI.Application.Abstractions.Services;
 using ETicaretAPI.Application.DTOs.Order;
 using ETicaretAPI.Application.Repositories;
+using ETicaretAPI.Application.Repositories.BasketItems;
+using ETicaretAPI.Application.Repositories.Baskets;
 using ETicaretAPI.Application.Repositories.CompletedOrders;
 using ETicaretAPI.Application.RequestParameters;
 using ETicaretAPI.Domain.Entities;
@@ -20,13 +22,17 @@ namespace ETicaretAPI.Persistence.Services
         private readonly IOrderReadRepository _orderReadRepository;
         private readonly ICompletedOrderWriteRepository _completedOrderWriteRepository;
         private readonly ICompletedOrderReadRepository _completedOrderReadRepository;
+        private readonly IBasketService _basketService;
+        private readonly IBasketItemWriteRepository _basketItemWriteRepository;
 
-        public OrderService(IOrderWriteRepository orderWriteRepository, IOrderReadRepository orderReadRepository, ICompletedOrderWriteRepository completedOrderWriteRepository, ICompletedOrderReadRepository completedOrderReadRepository)
+        public OrderService(IOrderWriteRepository orderWriteRepository, IOrderReadRepository orderReadRepository, ICompletedOrderWriteRepository completedOrderWriteRepository, ICompletedOrderReadRepository completedOrderReadRepository, IBasketService basketService, IBasketItemWriteRepository basketItemWriteRepository)
         {
             _orderWriteRepository = orderWriteRepository;
             _orderReadRepository = orderReadRepository;
             _completedOrderWriteRepository = completedOrderWriteRepository;
             _completedOrderReadRepository = completedOrderReadRepository;
+            _basketService = basketService;
+            _basketItemWriteRepository = basketItemWriteRepository;
         }
 
         public async Task<(bool, CompletedOrderDTO)> CompleteOrderAsync(string id)
@@ -56,8 +62,7 @@ namespace ETicaretAPI.Persistence.Services
 
         public async Task CreateOrderAsync(CreateOrder createOrder)
         {
-            var orderCode = (new Random().NextDouble() * 10000).ToString();
-            orderCode = orderCode.Substring(orderCode.IndexOf(',')+1, orderCode.Length-orderCode.IndexOf(",") - 1);
+            var orderCode = CreateOrderCode();
 
             await _orderWriteRepository.AddAsync(new()
             {
@@ -68,7 +73,8 @@ namespace ETicaretAPI.Persistence.Services
             });
 
             await _orderWriteRepository.SaveAsync();
-
+            await ChangeIdUnselectedBasketItemsAsync();
+            
         }
 
         public async Task<ListOrder> GetAllOrdersAsync(Pagination pagination)
@@ -136,6 +142,29 @@ namespace ETicaretAPI.Persistence.Services
                     bi.Quantity,
                 })
             };
+        }
+
+        private string CreateOrderCode()
+        {
+            var orderCode = (new Random().NextDouble() * 10000).ToString();
+            orderCode = orderCode.Substring(orderCode.IndexOf(',') + 1, orderCode.Length - orderCode.IndexOf(",") - 1);
+            return orderCode;
+        }
+
+        private async Task ChangeIdUnselectedBasketItemsAsync()
+        {
+            var basketItems = await _basketService.GetBasketItemsAsync();
+
+            var newBasketId = _basketService.GetUserActiveBasket.Id;
+
+            foreach (var item in basketItems)
+            {
+                if ((bool)!item.IsSelected)
+                {
+                    item.BasketId = newBasketId;
+                }
+            }
+            await _basketItemWriteRepository.SaveAsync();
         }
     }
 }

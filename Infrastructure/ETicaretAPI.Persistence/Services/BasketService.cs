@@ -103,6 +103,16 @@ namespace ETicaretAPI.Persistence.Services
             }
         }
 
+        public async Task UpdateSelectedAsync(VM_Update_BasketItem basketItem)
+        {
+            BasketItem? _basketItem = await _basketItemReadRepository.GetByIdAsync(basketItem.BasketItemId);
+            if (_basketItem != null)
+            {
+                _basketItem.IsSelected = basketItem.IsSelected;
+                await _basketItemWriteRepository.SaveAsync();
+            }
+        }
+
         private async Task<Basket> ContextUser()
         {
             var username = _httpContextAccessor.HttpContext?.User.Identity?.Name;
